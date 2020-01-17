@@ -173,8 +173,8 @@ class RouterProvider
             }
             $regex = '/^' . $union . '\/?$/u';
             if (true === (bool)preg_match($regex, rawurldecode($url), $data)) {
-                $parameter = (isset($args[1])) ? self::parseArguments($args[1], $csrf[$key], $data) : array();
-                return self::callback($callback[$key], $parameter);
+                $parameter = (isset($args[1])) ? self::parseArguments($args[1], $data) : array();
+                return self::callback($callback[$key], $csrf[$key], $parameter);
             }
         }
 
