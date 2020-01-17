@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ISMOA</title>
+        <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon_144.png"> 
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon_32.png"> 
+        <link rel="icon" type="image/png" sizes="48x48" href="/img/favicon_48.png">
+        <link rel="icon" type="shortcut icon" href="/img/favicon.ico">
+        <link rel="stylesheet" href="/css/error.min.css">
+    </head>
+    <body>
+        <section class="warpper">
+            <header class="header"></header>
+        <?php if ($develop == false) { ?>
+            <div class="div-msg-short">
+    There is a problem with the service.<br>
+    Click the bottom icon to go home.
+            </div>
+        <?php }else{ ?>
+            <div class="div-msg-full">
+                <table class="tbl-msg-wrap">
+                    <tr>
+                        <th>Message</th>
+                        <td><?=nl2br($msg)?></td>
+                    </tr>
+                    <tr>
+                        <th>Code</th>
+                        <td><?=$code?></td>
+                    </tr>
+                    <tr>
+                        <th>File</th>
+                        <td><?=$file?></td>
+                    </tr>
+                    <tr>
+                        <th>Line</th>
+                        <td><?=$line?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><?=nl2br($string)?></td>
+                    </tr>
+                </table>
+            </div>
+        <?php } ?>
+            <div class="div-link">
+                <a href="/"><img src="/svg/home.svg" title="Click to Home"></img></a>
+            </div>
+        </section>
+        <footer class="footer">
+            ⓒ Ismoa All Right.
+        </footer>
+    </body>
+</html>
