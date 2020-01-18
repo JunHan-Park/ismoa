@@ -10,11 +10,15 @@
 
 * PDO PHP Extension / Open SSL Extension / Json Extension / Ctype Extension / Mbstring PHP Extension
 
+* MariaDB 10.1.13
+
 * CentOS7
 
 
 ## 테스트 환경
 * PHP 5.5.17 / 7.3.x / 7.4.1
+
+* MariaDB 10.4.11
 
 * 개발 환경과 동일
 
