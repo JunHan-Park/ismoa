@@ -1,7 +1,6 @@
 <?php
 
 use Artistic\Http\RequestProvider;
-use Artistic\Security\CsrfSecurity;
 
 class Request extends RequestProvider
 {
@@ -10,15 +9,6 @@ class Request extends RequestProvider
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function csrfSecurity()
-    {
-        try{
-            CsrfSecurity::getInstance()->verifyCsrf($this);
-        }catch(\ArtisticException $E) {
-            $E->getException();
-        }
     }
 
     public function input()
