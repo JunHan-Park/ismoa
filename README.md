@@ -25,7 +25,7 @@
 
 ## 사용방법
 
-* Apache mod_rewrite 기능을 활성화 한후 WEBROOT 에 업로드 하는 것 만으로 이용이 가능하며, NGINX의 경우 WEBROOT의 경로를 public 디렉토리로 변경 후 이용이 가능합니다.
+* Apache mod_rewrite 기능을 활성화 한후 WEBROOT 에 업로드 하는 것 만으로 이용이 가능하며, Nginx의 경우 WEBROOT의 변경과 약간의 설정이 필요합니다.
 
 * 기타 api 등 사용에 관하여 <a href="https://ismoa.net/document">여기</a>를 참고 하세요.
 
