@@ -10,15 +10,6 @@ return array(
     //allow http method 
     ,'method' => array('put', 'patch', 'delete')
 
-    // database account infomation
-    ,'database' => array(
-        'host'      => 'localhost'
-        ,'port'     => '3306'
-        ,'dbname'   => 'database name'
-        ,'username'  => 'database user name'
-        ,'passwd'   => 'databse password'
-        ,'charset'  => 'utf8'
-    )
     //default locale
     ,'locale' => 'kr'
     //pagenate setting
