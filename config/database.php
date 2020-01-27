@@ -1,9 +1,9 @@
 <?php
 return array(
     'host'      => 'localhost'
-    ,'dbname'   => 'ismoanet'
-    ,'username' => 'ismoanet'
-    ,'passwd'   => 'saint86!!'
+    ,'dbname'   => 'dbname'
+    ,'username' => 'accountname'
+    ,'passwd'   => 'password'
     ,'port'     => '3306'
     ,'charset'  => 'utf8'
 );
