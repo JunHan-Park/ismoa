@@ -72,10 +72,10 @@ class Mysql extends \PDO
     private function regexQuery($mode)
     {
         $regex = array(
-            'insert' => '/^insert into(?:.*)values(?:.*)\;?/u'
-            ,'update' => '/^update(?:.*)set(?:.*)[where]?/u'
-            ,'select' => '/^select(?:.*)from(?:.*)[where]?/u'
-            ,'delete' => '/^delete from(?:.*)[where]?/u'
+            'insert' => '/^insert into(?:.*)values(?:.*)\;?/iu'
+            ,'update' => '/^update(?:.*)set(?:.*)[where]?/iu'
+            ,'select' => '/^select(?:.*)from(?:.*)[where]?/iu'
+            ,'delete' => '/^delete from(?:.*)[where]?/iu'
             );
 
         if (!preg_match($regex[$mode], $this->sql)) throw new \ArtisticException('This query could not be processed.', 500);
