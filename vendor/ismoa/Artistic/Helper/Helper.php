@@ -59,7 +59,7 @@ class Helper
                 . $this->separator
                 . str_replace('.', $this->separator, trim($uri, '.')) 
                 . $this->buildQuery($qrst);
-            $this->onLocation(rtrim($uri,'/'));
+            register_shutdown_function(array($this, 'onLocation'),rtrim($uri,'/'));
         }
         return $this;
     }
@@ -79,7 +79,7 @@ class Helper
             else $uri = $this->buildDomain();
         }
 
-        $this->onLocation($uri);
+        register_shutdown_function(array($this, 'onLocation'), $uri);
         return $this;
     }
 
