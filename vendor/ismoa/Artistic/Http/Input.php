@@ -168,9 +168,11 @@ class Input
 
         $parse = array();
         foreach ($split as $key => $item) {
-            list($name, $data) = explode('=', urldecode($item));
-            $data = (strlen($data) > 0) ? $data : '';
-            $this->parseInputName($name, $data);
+            if (strlen($item) > 0) {
+                list($name, $data) = explode('=', urldecode($item));
+                $data = (strlen($data) > 0) ? $data : '';
+                $this->parseInputName($name, $data);
+            }
         }
         return $parse;
     }
