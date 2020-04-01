@@ -34,7 +34,8 @@ class Helper
 
     private function buildDomain()
     {
-        return $_SERVER['HTTP_X_FORWARDED_PROTO'] . '://' . $_SERVER['HTTP_X_HOST'];
+        $protocol = ($_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
+        return $protocol . '://' . $_SERVER['HTTP_HOST'];
     }
 
     private function buildQuery(array $qrst)
