@@ -92,9 +92,9 @@ class Input
                    if (file_exists($tmp_name)) unlink($tmp_name);
                 });
             $data = array(
-                'name' => $match[2]
-                ,'type' => $mime[1]
-                ,'tmp_name' => $tmp_name
+                'name' => trim($match[2])
+                ,'type' => trim($mime[1])
+                ,'tmp_name' => trim($tmp_name)
                 ,'error' => (false !== $error) ? 0 : $error
                 ,'size' => filesize($tmp_name)
                 );
