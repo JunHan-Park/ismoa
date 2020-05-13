@@ -27,7 +27,7 @@ class Helper
         }
     }
 
-    private function onLocation($uri)
+    public function onLocation($uri)
     {
         header('Location: ' . $uri);
     }
