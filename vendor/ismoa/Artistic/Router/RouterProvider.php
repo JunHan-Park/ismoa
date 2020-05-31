@@ -5,10 +5,13 @@ use Request;
 
 class RouterProvider
 {
-    public static $route;
-    public static $callback;
-    public static $csrf;
-    public static $argument;
+    protected static $route;
+    protected static $callback;
+    protected static $csrf;
+    protected static $sess;
+    protected static $argument;
+    protected static $callable = false;
+    protected static $object = false;
 
     public static function request()
     {
@@ -107,29 +110,34 @@ class RouterProvider
         return $Closure->invokeArgs($resolve);
     }
 
-    private static function callback($callback, $csrf, $argument = array())
+    private static function callReflect($callback, $Controller, $method, $argument)
     {
-        if (true === $csrf) self::request()->csrfSecurity();
-        if (is_callable($callback) && $callback instanceof \Closure) {
-            return self::reflectClosure($callback, $argument);
-        } else {
-            try {
-                if (false === strpos($callback, '@')) throw new \ArtisticException('callback error', 404);
-                list($class, $method) = explode('@', $callback);
+        if (true === self::$callable) return self::reflectClosure($callback , $argument);
+        if (false !== self::$object) return self::reflectClass($Controller, $method, $argument);
+    }
 
-                $Controller = '\\App\\Http\\Controllers\\' . $class;
+    private static function callback($callback, $csrf, $sess, $argument = array())
+    {
+        self::$callable = self::$object = false;
+        $Controller = $method = null;
 
-                if (false === class_exists($Controller, true))
-                    throw new \ArtisticException('class not found ' . $Controller, 500);
+        if (!(self::$callable = is_callable($callback)) && (false === (self::$object = strpos($callback, '@'))))
+            throw new \ArtisticException('callback not found', 404);
 
-                if (false === method_exists($Controller, $method)) 
-                    throw new \ArtisticException('method not found ' . $Controller, 500);
+        if (false !== self::$object) {
+            list($class, $method) = explode('@', $callback);
 
-                return self::reflectClass($Controller, $method, $argument);
-            } catch (\ArtisticException $E) {
-                $E->getException();
-            } 
+            $Controller = '\\App\\Http\\Controllers\\' . $class;
+            if (false === class_exists($Controller, true))
+                throw new \ArtisticException('class not found ' . $Controller, 500);
+
+            if (false === method_exists($Controller, $method)) 
+                throw new \ArtisticException('method not found ' . $Controller, 500);
         }
+        if (true === $csrf) self::request()->csrfSecurity();
+        if (true === $sess) session_start();
+
+        return self::callReflect($callback, $Controller, $method, $argument);
     }
 
     public static function match()
@@ -138,6 +146,7 @@ class RouterProvider
         $routes = isset(self::$route[$method]) ? self::$route[$method] : array();
         $callback = isset(self::$callback[$method]) ? self::$callback[$method] : array();
         $csrf = isset(self::$csrf[$method]) ? self::$csrf[$method] : array();
+        $sess = isset(self::$sess[$method]) ? self::$sess[$method] : array();
 
         $url = trim(self::getUri(), '/');
 
@@ -154,7 +163,7 @@ class RouterProvider
                 preg_match_all('/{([\w]+)(\??)}/u', $route, $args))) continue;
 
             if ($url == $route) 
-                if(isset($callback[$key])) return self::callback($callback[$key], $csrf[$key]);
+                if(isset($callback[$key])) return self::callback($callback[$key], $csrf[$key], $sess[$key]);
              if (count($args) > 0) {
                 $split = preg_split('/((\-?\/?)\{[^}]+\})/', $route);
                 $count = count($args[1]);
@@ -174,7 +183,7 @@ class RouterProvider
             $regex = '/^' . $union . '\/?$/u';
             if (true === (bool)preg_match($regex, rawurldecode($url), $data)) {
                 $parameter = (isset($args[1])) ? self::parseArguments($args[1], $data) : array();
-                return self::callback($callback[$key], $csrf[$key], $parameter);
+                return self::callback($callback[$key], $csrf[$key], $sess[$key], $parameter);
             }
         }
 
@@ -184,10 +193,11 @@ class RouterProvider
         throw new \ArtisticException('Unregistered URL' . PHP_EOL . $msg, 404);
     }
 
-    public static function add($method, $route, $callback, $csrf)
+    public static function add($method, $route, $callback, $csrf, $sess)
     {
         self::$route[$method][] = $route;
         self::$callback[$method][] = $callback;
         self::$csrf[$method][] = $csrf;
+        self::$sess[$method][] = $sess;
     }
 }//end class
