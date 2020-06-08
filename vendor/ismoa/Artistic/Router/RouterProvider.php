@@ -120,6 +120,7 @@ class RouterProvider
     {
         self::$callable = self::$object = false;
         $Controller = $method = null;
+        $sess = (true === $csrf) ? true : $sess;
 
         if (!(self::$callable = is_callable($callback)) && (false === (self::$object = strpos($callback, '@'))))
             throw new \ArtisticException('callback not found', 404);
@@ -134,8 +135,9 @@ class RouterProvider
             if (false === method_exists($Controller, $method)) 
                 throw new \ArtisticException('method not found ' . $Controller, 500);
         }
-        if (true === $csrf) self::request()->csrfSecurity();
+
         if (true === $sess) session_start();
+        if (true === $csrf) self::request()->csrfSecurity();
 
         return self::callReflect($callback, $Controller, $method, $argument);
     }
