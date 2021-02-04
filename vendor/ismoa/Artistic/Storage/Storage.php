@@ -5,9 +5,7 @@ class Storage
     private $root = null;
     private $real;
     private $name;
-    
-    use \Artistic\Traits\Singleton;
-    
+      
     public function __construct()
     {
         $this->root = realpath(__DIR__ . '/../../../../storage');
