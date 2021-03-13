@@ -1,25 +1,9 @@
 <?php
-
-function _time() {
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
-
 function _pr($item)
 {
     echo '<pre>';
     print_r($item);
     echo '</pre>';
-}
-
-function _empty($val)
-{
-    return (!isset($val) || strlen($val) < 1) ? true : false;
-}
-
-function _json_encode(array $arr)
-{
-    return exit(json_encode($arr));
 }
 
 function getPostMaxSize()
