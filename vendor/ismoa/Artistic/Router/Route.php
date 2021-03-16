@@ -4,29 +4,29 @@ use Artistic\Routing\RouterProvider;
 
 class Route extends RouterProvider
 {
-    public static function put($route, $callback, $csrf = false, $sess = true)
+    public static function put($route, $callback, $csrf = false)
     {
-        self::add('put' , $route, $callback, $csrf, $sess);
+        self::add('put' , $route, $callback, $csrf);
     }
 
-    public static function patch($route, $callback, $csrf = false, $sess = true)
+    public static function patch($route, $callback, $csrf = false)
     {
-        self::add('patch' , $route, $callback, $csrf, $sess);
+        self::add('patch' , $route, $callback, $csrf);
     }
 
-    public static function delete($route, $callback, $csrf = false, $sess = true)
+    public static function delete($route, $callback, $csrf = false)
     {
-        self::add('delete' , $route, $callback, $csrf, $sess);
+        self::add('delete' , $route, $callback, $csrf);
     }
 
-    public static function get($route, $callback, $csrf = false, $sess = true)
+    public static function get($route, $callback, $csrf = false)
     {
-        self::add('get' , $route, $callback, $csrf, $sess);
+        self::add('get' , $route, $callback, $csrf);
     }
 
-    public static function post($route, $callback, $csrf = false, $sess = true)
+    public static function post($route, $callback, $csrf = false)
     {
-        self::add('post', $route, $callback, $csrf, $sess);
+        self::add('post', $route, $callback, $csrf);
     }
 
     public static function run()
