@@ -8,7 +8,6 @@ class RouterProvider
     protected static $route;
     protected static $callback;
     protected static $csrf;
-    protected static $sess;
     protected static $argument;
     protected static $callable = false;
     protected static $object = false;
@@ -116,12 +115,11 @@ class RouterProvider
         if (false !== self::$object) return self::reflectClass($Controller, $method, $argument);
     }
 
-    private static function callback($callback, $csrf, $sess, $argument = array())
+    private static function callback($callback, $csrf, $argument = array())
     {
         self::$callable = self::$object = false;
         $Controller = $method = null;
-        $sess = (true === $csrf) ? true : $sess;
-
+  
         if (!(self::$callable = is_callable($callback)) && (false === (self::$object = strpos($callback, '@'))))
             throw new \ArtisticException('callback not found', 404);
 
@@ -136,7 +134,19 @@ class RouterProvider
                 throw new \ArtisticException('method not found ' . $Controller, 500);
         }
 
-        if (true === $sess) session_start();
+        $cookie = session_get_cookie_params();
+        $config = config('session');
+
+        $cookie['lifetime'] = (isset($config['lifetime']) && strlen($config['lifetime']) > 0) ? $config['lifetime'] : $cookie['lifetime'];
+        $cookie['path'] = (isset($config['path']) && strlen($config['path']) > 0) ? $config['path'] : $cookie['path'];
+        $cookie['domain'] = (isset($config['domain']) && strlen($config['domain']) > 0) ? $config['domain'] : $cookie['domain'];
+        $cookie['secure'] = (isset($config['secure']) && strlen($config['secure']) > 0) ? $config['secure'] : $cookie['secure'];
+        $cookie['httponly'] = (isset($config['httponly']) && strlen($config['httponly']) > 0) ? $config['httponly'] : $cookie['httponly'];
+        $cookie['samesite'] = (isset($config['samesite']) && strlen($config['samesite']) > 0) ? $config['samesite'] : $cookie['samesite'];
+
+        session_set_cookie_params($cookie);
+        session_start();
+        
         if (true === $csrf) self::request()->csrfSecurity();
 
         return self::callReflect($callback, $Controller, $method, $argument);
@@ -148,7 +158,6 @@ class RouterProvider
         $routes = isset(self::$route[$method]) ? self::$route[$method] : array();
         $callback = isset(self::$callback[$method]) ? self::$callback[$method] : array();
         $csrf = isset(self::$csrf[$method]) ? self::$csrf[$method] : array();
-        $sess = isset(self::$sess[$method]) ? self::$sess[$method] : array();
 
         $url = trim(self::getUri(), '/');
 
@@ -165,7 +174,7 @@ class RouterProvider
                 preg_match_all('/{([\w]+)(\??)}/u', $route, $args))) continue;
 
             if ($url == $route) 
-                if(isset($callback[$key])) return self::callback($callback[$key], $csrf[$key], $sess[$key]);
+                if(isset($callback[$key])) return self::callback($callback[$key], $csrf[$key]);
              if (count($args) > 0) {
                 $split = preg_split('/((\-?\/?)\{[^}]+\})/', $route);
                 $count = count($args[1]);
@@ -185,7 +194,7 @@ class RouterProvider
             $regex = '/^' . $union . '\/?$/u';
             if (true === (bool)preg_match($regex, rawurldecode($url), $data)) {
                 $parameter = (isset($args[1])) ? self::parseArguments($args[1], $data) : array();
-                return self::callback($callback[$key], $csrf[$key], $sess[$key], $parameter);
+                return self::callback($callback[$key], $csrf[$key], $parameter);
             }
         }
 
@@ -195,11 +204,10 @@ class RouterProvider
         throw new \ArtisticException('Unregistered URL' . PHP_EOL . $msg, 404);
     }
 
-    public static function add($method, $route, $callback, $csrf, $sess)
+    public static function add($method, $route, $callback, $csrf)
     {
         self::$route[$method][] = $route;
         self::$callback[$method][] = $callback;
         self::$csrf[$method][] = $csrf;
-        self::$sess[$method][] = $sess;
     }
 }//end class
