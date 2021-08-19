@@ -38,11 +38,6 @@ class Storage
 
     private function makeName($name)
     {
-        $pathinfo = pathinfo($this->real);
-
-        $name = (strlen($name) < 1) ? $pathinfo['filename'] : $name;
-        $name .='.'.$pathinfo['extension'];
-
         return (false !== $this->isIe()) ? iconv('UTF-8', 'CP949', $name) : $name;
     }
 
