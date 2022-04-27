@@ -62,10 +62,10 @@ class RouterProvider
     {
         $refined = array();
         foreach($parameter as $key => $reflect) {
-            if(is_null($class = $reflect->getClass())) {
-                if($reflect->isDefaultValueAvailable()) $refined[$reflect->getName()] = $reflect->getDefaultValue();
+            if (is_null($class = $reflect->getName())) {
+                if ($reflect->isDefaultValueAvailable()) $refined[$reflect->getName()] = $reflect->getDefaultValue();
             } else {
-                  $refined[$class->name] = ($class->name == 'Request') ? self::request() : new $class->name;
+                $refined[$class] = ($class == 'Request') ? self::request() : new $class;
             }
         }
         return $refined;
