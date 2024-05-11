@@ -101,17 +101,17 @@ class Mysql extends \PDO
         $this->trace = true;
     }
 
-    public function transaction()
+    public function _transaction()
     {
         return parent::beginTransaction();
     }
 
-    public function commit()
+    public function _commit()
     {
         return parent::commit();
     }
 
-    public function rollback()
+    public function _rollback()
     {
         return parent::rollback();
     }
