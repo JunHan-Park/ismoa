@@ -39,31 +39,32 @@ class RouterProvider
     private static function resolveParamter($refined = array(), $argument = array())
     {
         $resolve = array();
+        
         foreach ($refined as $key => $val) {
             if(is_object($val)) {
                 unset($argument[$key]);
-                $resolve[$key] = $val;
+                $resolve[] = $val;
             } else {
                 if (isset($argument[$key])) {
-                    $resolve[$key] = $argument[$key];
+                    $resolve[] = $argument[$key];
                     unset($argument[$key]);
                 } else {
-                    $resolve[$key] = $val;
+                    $resolve[] = $val;
                 }
             }
         }
 
         if (count($argument) > 0) $resolve += $argument;
-
         return $resolve;
     }
 
     private static function refinedParameter($parameter)
     {
         $refined = array();
-        foreach($parameter as $key => $reflect) {
-            if (is_null($reflect->getType())) {
-                if ($reflect->isDefaultValueAvailable()) $refined[$reflect->name] = $reflect->getDefaultValue();
+        foreach ($parameter as $key => $reflect) {
+
+            if ($reflect->getType()->isBuiltin()){
+                if($reflect->isDefaultValueAvailable()) $refined[$reflect->name] = $reflect->getDefaultValue();
             } else {
                 $class = $reflect->getType()->getName();
                 $refined[$class] = ($class == 'Request') ? self::request() : new $class;
@@ -78,7 +79,7 @@ class RouterProvider
         $parameter = $construct->getParameters();
         $refined = self::refinedParameter($parameter);
         $resolve = self::resolveParamter($refined);
-
+        
         return $Class->newInstanceArgs($resolve);
     }
 
@@ -88,7 +89,8 @@ class RouterProvider
         $parameter = $method->getParameters();
         $refined = self::refinedParameter($parameter);
         $resolve = self::resolveParamter($refined, $argument);
-
+        
+        //_pr($resolve);
         return $method->invokeArgs($instance, $resolve);
     }
 
@@ -120,7 +122,7 @@ class RouterProvider
     {
         self::$callable = self::$object = false;
         $Controller = $method = null;
-  
+      
         if (!(self::$callable = is_callable($callback)) && (false === (self::$object = strpos($callback, '@'))))
             throw new \ArtisticException('callback not found', 404);
 
@@ -144,10 +146,11 @@ class RouterProvider
         $cookie['secure'] = (isset($config['secure']) && strlen($config['secure']) > 0) ? $config['secure'] : $cookie['secure'];
         $cookie['httponly'] = (isset($config['httponly']) && strlen($config['httponly']) > 0) ? $config['httponly'] : $cookie['httponly'];
         $cookie['samesite'] = (isset($config['samesite']) && strlen($config['samesite']) > 0) ? $config['samesite'] : $cookie['samesite'];
-
+ 
         session_set_cookie_params($cookie);
+        //session_cache_expire(1);
         session_start();
-        
+
         if (true === $csrf) self::request()->csrfSecurity();
 
         return self::callReflect($callback, $Controller, $method, $argument);
@@ -174,8 +177,10 @@ class RouterProvider
             if ((!$is_conv && $route != $url) || ($is_conv && !(bool)
                 preg_match_all('/{([\w]+)(\??)}/u', $route, $args))) continue;
 
-            if ($url == $route) 
+            if ($url == $route) {
                 if(isset($callback[$key])) return self::callback($callback[$key], $csrf[$key]);
+            }
+
              if (count($args) > 0) {
                 $split = preg_split('/((\-?\/?)\{[^}]+\})/', $route);
                 $count = count($args[1]);
@@ -199,10 +204,7 @@ class RouterProvider
             }
         }
 
-        $msg =  'REQUEST URL : '. $url . PHP_EOL . 
-                'REQUEST IP : ' . self::request()->header['remote_addr'] . PHP_EOL .
-                'REQUEST AGENT : ' .self::request()->header['http_user_agent'] . PHP_EOL; 
-        throw new \ArtisticException('Unregistered URL' . PHP_EOL . $msg, 404);
+        self::request()->requestException('Unregistered URL');
     }
 
     public static function add($method, $route, $callback, $csrf)
