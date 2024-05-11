@@ -47,17 +47,17 @@ class DB
 
     public static function transaction()
     {
-        return static::adepter()->transaction();
+        return static::adepter()->_transaction();
     }
 
     public static function commit()
     {
-        return static::adepter()->commit();
+        return static::adepter()->_commit();
     }
 
     public static function rollback()
     {
-        return static::adepter()->rollback();
+        return static::adepter()->_rollback();
     }
 
     public static function escape($str)
