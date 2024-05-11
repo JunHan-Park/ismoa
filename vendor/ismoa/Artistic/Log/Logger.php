@@ -5,6 +5,7 @@ class Logger
 {
     private $root;
     private $log;
+    private $directory;
 
     public function __construct()
     {
