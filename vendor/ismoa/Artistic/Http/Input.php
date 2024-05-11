@@ -179,7 +179,7 @@ class Input
 
     private function parseInput()
     {
-        if (false !== ($boundary = $this->parseBoundary()) && strlen($boundary) < 1) {
+        if (false !== ($boundary = $this->parseBoundary()) && (is_null($boundary) || strlen($boundary) < 1)) {
             if (is_null($boundary)) $split = $this->streamParse();
             else return parse_str(urlencode($this->stream), $data);
         } else {
