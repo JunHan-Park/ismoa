@@ -126,7 +126,7 @@ class Mysql extends \PDO
         return $this->exec($sql);
     }
 
-    public function query($sql, $parameter = array(), $fatch = false)
+    public function _query($sql, $parameter = array(), $fatch = false)
     {
         $stmt = $this->prepare($this->removeEOL($sql));
         $exec = $stmt->execute($parameter);
