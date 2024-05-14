@@ -143,11 +143,8 @@ class Storage
         $mime   = mime_content_type($dest);
         $types  = $this->imageType();
         if (!in_array($mime, $types)) return false;
-
-        $image = file_get_contents($dest);
-
-        header('content-type: image/jpeg');
-        return $image;
+        header('Content-Type: '. $mime);
+        echo file_get_contents($dest);
     }
 
     public function deleteDirectory($dest)
