@@ -22,7 +22,7 @@ class DB
 
     public static function query($sql, $parameter = array(), $fetch = false)
     {
-        return static::adepter()->query($sql, $parameter, $fetch);
+        return static::adepter()->_query($sql, $parameter, $fetch);
     }
 
     public static function insert($sql, $parameter = array(), $lastid = false)
