@@ -192,7 +192,7 @@ class RouterProvider
                     if ($skey < $count) {
                         $name = $args[1][$skey];
                         $regex = ($skey == 0 && strlen($item) < 1) ? '' : $separator;
-                        $format = '(%1$s(?P<%2$s>[\w|\.?|\s]+))' . $args[2][$skey];
+                        $format = '(%1$s(?P<%2$s>[\w|\.?|\s|\-|\p{Emoji_Presentation}\p{Katakana}\p{Hiragana}\p{Han}]+))' . $args[2][$skey];
                         $conv = sprintf($format, $regex, $name);
                     }
                     $union .= preg_quote($item, '/') . $conv;
