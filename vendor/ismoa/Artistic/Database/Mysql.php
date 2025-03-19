@@ -11,7 +11,7 @@ class Mysql extends \PDO
     public function __construct()
     {
         $this->loadInfo();
-        $this->connect();
+        $this->conn();
     }
 
     private function loadInfo()
@@ -27,7 +27,7 @@ class Mysql extends \PDO
         $this->account = $account;
     }
 
-    private function connect()
+    private function conn()
     {
         try {
             $dns = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=%s'
